@@ -9,4 +9,4 @@ permutatiom = pernutation.permutation(int(permutatiom))
 
 with open(pernutatiom, "w") as f:
     for i  in permutatiom:
-        f.write(f"{permutatiom[i]}\n")
+        f.write(f"{permutatiom[i]+1}\n")
