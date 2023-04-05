@@ -1,18 +1,19 @@
-typedef int TipoInfo;
+#ifndef AVL_H
+#define AVL_H
 
-typedef struct TNodoA pAVL;
+typedef struct TNodoAVL{
+    int info;
+    int FB;
+    struct TNodoAVL *esq;
+    struct TNodoAVL *dir;
+} pAVL;
 
-pAVL * InsereArvore(pAVL * a, TipoInfo ch);
-int Altura (pAVL * a);
-int Calcula_FB(pAVL * a);
-void Desenha(pAVL * a , int nivel);
-int is_avl(pAVL * a);
-pAVL * rotacao_direita(pAVL * pt);
-pAVL * rotacao_esquerda(pAVL * pt);
-pAVL * rotacao_dupla_direita (pAVL * pt);
-pAVL * rotacao_dupla_esquerda (pAVL * pt);
-pAVL * Caso1 (pAVL * a , int *ok);
-pAVL * Caso2 (pAVL * a , int *ok);
-pAVL * InsereAVL (pAVL * a, TipoInfo x, int *ok);
-pAVL* consultaAVL(pAVL *a, TipoInfo chave);
+// int Altura (pAVL * a);
+// pAVL * RotacaoDireita(pAVL * pt);
+// pAVL * RotacaoEsquerda(pAVL * pt);
+// pAVL * RotacaoDuplaDireita (pAVL * pt);
+// pAVL * RotacaoDuplaEsquerda (pAVL * pt);
+pAVL * InsereAVL (pAVL * a, int x);
+pAVL* consultaAVL(pAVL *a, int chave);
 
+#endif

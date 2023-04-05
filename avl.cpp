@@ -3,33 +3,6 @@
 #include <string.h>
 #include "avl.h"
 
-
-struct TNodoA{
-TipoInfo info;
-int FB;
-struct TNodoA *esq;
-struct TNodoA *dir;
-};
-
-
-// pAVL* InsereArvore(pAVL* a, TipoInfo ch)
-// {
-//   if (a == NULL)
-//   {
-//     a = (pAVL*) malloc(sizeof(pAVL));
-//     a->info = ch;
-//     a->esq = NULL;
-//     a->dir = NULL;
-//     a->FB = 0; // o nodo � sempre inserido como folha ent�o seu fator de balanceamento � 0
-//   }
-//   else
-//   if (ch < (a->info))
-//     a->esq = InsereArvore(a->esq,ch);
-//   else
-//     a->dir = InsereArvore(a->dir,ch);
-//     return a;
-// }
-
 int Altura (pAVL *a)
 {
     int Alt_Esq, Alt_Dir;
@@ -46,41 +19,7 @@ int Altura (pAVL *a)
      }
 }
 
-int Calcula_FB(pAVL *a)
-{
-    return (Altura(a->esq) - Altura(a->dir));
-}
-
-void Desenha(pAVL *a , int nivel)
-{
-int x;
-
- if (a !=NULL)
- {
-   for (x=1; x<=nivel; x++)
-      printf("=");
-  printf("%d FB= %d\n", a->info, Calcula_FB(a));
-   if (a->esq != NULL) Desenha(a->esq, (nivel+1));
-   if (a->dir != NULL) Desenha(a->dir, (nivel+1));
- }
-}
-
-int is_avl(pAVL *a)
-{
-  int alt_esq, alt_dir;
-
-  if (a!=NULL)
-  {
-     alt_esq = Altura(a->esq);
-     alt_dir = Altura(a->dir);
-     return ( (alt_esq - alt_dir <2) && (alt_dir - alt_esq <2) && (is_avl(a->esq)) && (is_avl(a->dir)) );
-  }
-  else
-  return 1;
-}
-
-
-pAVL* rotacao_direita(pAVL *pt){
+pAVL* RotacaoDireita(pAVL *pt){
    pAVL* ptu;
 
    ptu = pt->esq; 
@@ -91,7 +30,7 @@ pAVL* rotacao_direita(pAVL *pt){
    return pt;
 }
 
-pAVL* rotacao_esquerda(pAVL *pt){
+pAVL* RotacaoEsquerda(pAVL *pt){
    pAVL* ptu;
 
    ptu = pt->dir; 
@@ -102,7 +41,7 @@ pAVL* rotacao_esquerda(pAVL *pt){
    return pt;
 } 
 
-pAVL* rotacao_dupla_direita (pAVL* pt){
+pAVL* RotacaoDuplaDireita (pAVL* pt){
    pAVL* ptu, *ptv;
 
    ptu = pt->esq; 
@@ -119,7 +58,7 @@ pAVL* rotacao_dupla_direita (pAVL* pt){
    return pt;
 } 
 
-pAVL* rotacao_dupla_esquerda (pAVL* pt){
+pAVL* RotacaoDuplaEsquerda (pAVL* pt){
    pAVL *ptu, *ptv;
 
    ptu = pt->dir; 
@@ -137,92 +76,52 @@ pAVL* rotacao_dupla_esquerda (pAVL* pt){
 }
 
 
-pAVL* Caso1 (pAVL* a , int *ok)
-{
-   pAVL *ptu; 
-
-	ptu = a->esq;
-	if (ptu->FB == 1) 
-    {    
-        printf("fazendo rotacao direita em %d\n",a->info);
-        a = rotacao_direita(a);
-     }
-    else
-    {
-        printf("fazendo rotacao dupla direita em %d\n",a->info);
-        a = rotacao_dupla_direita(a);
+pAVL* InsereAVL(pAVL* a, int x) {
+    if (a == NULL) {
+        // A árvore está vazia, criamos um novo nodo com a informação x
+        pAVL* novo = (pAVL*) malloc(sizeof(pAVL));
+        novo->info = x;
+        novo->esq = NULL;
+        novo->dir = NULL;
+        novo->FB = 0;
+        return novo;
     }
-	
-    a->FB = 0;
-	*ok = 0;
-	return a;
-}
 
-pAVL* Caso2 (pAVL *a , int *ok)
-{
-    pAVL *ptu; 
+    // A árvore não está vazia, devemos procurar o local correto para inserir o novo nodo
+    if (x < a->info) {
+        // O novo nodo deve ser inserido na subárvore esquerda
+        a->esq = InsereAVL(a->esq, x);
 
-	ptu = a->dir;
-	if (ptu->FB == -1) 
-    {
-       Desenha(a,1);
-       printf("fazendo rotacao esquerda em %d\n",a->info);
-       a=rotacao_esquerda(a);
-    }
-    else
-    {
-       Desenha(a,1);
-       printf("fazendo rotacao dupla esquerda em %d\n",a->info);
-       a=rotacao_dupla_esquerda(a);
-    }
-	a->FB = 0;
-	*ok = 0;
-	return a;
-}
-
-pAVL* InsereAVL (pAVL *a, TipoInfo x, int *ok)
-{
-/* Insere nodo em uma �rvore AVL, onde A representa a raiz da �rvore,
-  x, a chave a ser inserida e h a altura da �rvore */
-
-     if (a == NULL) 
-     {
-     	a = (pAVL*) malloc(sizeof(pAVL));
-        a->info = x;
-        a->esq = NULL;
-        a->dir = NULL;
-        a->FB = 0; 
-	    *ok = 1;
-     }
-     else
-     if (x < a->info) 
-     {
-		a->esq = InsereAVL(a->esq,x,ok);
-        if (*ok) 
-        {
-   		    switch (a->FB) {
-        	  case -1:  a->FB = 0; *ok = 0; break;
-			  case  0:  a->FB = 1;  break;
-			  case  1:  a=Caso1(a,ok); break;
+        // Verifica se a inserção afetou o fator de balanceamento do nodo atual
+        if (Altura(a->esq) - Altura(a->dir) == 2) {
+            if (x < a->esq->info) {
+                a = RotacaoDireita(a);
+            } else {
+                a = RotacaoDuplaDireita(a);
             }
-         }
-     }
-	 else
-     {
-  		    a->dir = InsereAVL(a->dir,x,ok);
-            if (*ok)
-            { 
-              switch (a->FB) {
-                case  1:  a->FB = 0; *ok = 0; break;
-                case  0:  a->FB = -1; break;
-			    case -1:  a = Caso2(a,ok); break;
-             }
+        }
+    } else {
+        // O novo nodo deve ser inserido na subárvore direita
+        a->dir = InsereAVL(a->dir, x);
+
+        // Verifica se a inserção afetou o fator de balanceamento do nodo atual
+        if (Altura(a->dir) - Altura(a->esq) == 2) {
+            if (x > a->dir->info) {
+                a = RotacaoEsquerda(a);
+            } else {
+                a = RotacaoDuplaEsquerda(a);
             }
-     }
-     return a;
+        }
+    }
+
+    // Atualiza o fator de balanceamento do nodo atual
+    a->FB = Altura(a->esq) - Altura(a->dir);
+
+    return a;
 }
 
-pAVL* consultaAVL(pAVL *a, TipoInfo chave) {
+
+pAVL* consultaAVL(pAVL *a, int chave) {
 
     while (a!=NULL){
           if (a->info == chave )

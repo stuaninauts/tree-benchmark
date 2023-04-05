@@ -1,20 +1,13 @@
-typedef int tipoinfo;
+#ifndef ABP_H
+#define ABP_H
 
-struct TNodoA{
-        tipoinfo info;
-        struct TNodoA *esq;
-        struct TNodoA *dir;
-};
+typedef struct TNodoABP{
+        int info;
+        struct TNodoABP *esq;
+        struct TNodoABP *dir;
+} pABP;
 
-typedef struct TNodoA pABP;
+pABP* InsereArvore(pABP *a, int ch);
+pABP* consultaABP(pABP *a, int chave);
 
-pABP* InsereArvore(pABP *a, tipoinfo ch);
-void preFixadoE(pABP *a);
-void preFixadoD(pABP *a);
-void posFixadoE(pABP *a);
-void posFixadoD(pABP *a);
-void CentralE(pABP *a);
-void CentralD(pABP *a);
-pABP* consultaABP(pABP *a, tipoinfo chave);
-pABP* consultaABP2(pABP *a, tipoinfo chave);
-
+#endif
