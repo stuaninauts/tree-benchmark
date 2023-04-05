@@ -29,28 +29,30 @@ void progressBar(int progress, int total) {
 
 int main(int argc, char **argv) {
 
+   // Set RNG seed
    srand(time(0));
-   // Get number of 
+
+   // Get size of tree
    char buff[1024];
    int size_of_tree = 0;
    FILE * db = fopen(argv[1], "r");
    while(fgets(buff, sizeof(buff), db) != NULL) {
       size_of_tree++;
    }
+   fclose(db);
 
    // Output file
    FILE * out = fopen(argv[2], "w");
    fprintf(out, "size,abp_insert,avl_insert,abp_fqe,abp_mqe,abp_lqe,avl_fqe,avl_mqe,avl_lqe,abp_rand_mean,avl_rand_mean\n");
    fprintf(out, "%d,", size_of_tree);
-   
 
    // Create tree
    pABP *ABP = NULL;
    pAVL *AVL = NULL;
 
-   int counter = 0;
 
    // Insert ABP
+   int counter = 0;
    printf("Inserting ABP...\n");
    db = fopen(argv[1], "r");
    clock_t start = clock();
@@ -63,7 +65,6 @@ int main(int argc, char **argv) {
       }
    clock_t end = clock();
    fclose(db);
-
    double insert_time_ABP = (double) (end - start) / CLOCKS_PER_SEC;
    printf("[ABP] Insert %d integers: %lf\n", size_of_tree, insert_time_ABP);
    fprintf(out, "%.10f,", insert_time_ABP);
@@ -81,54 +82,55 @@ int main(int argc, char **argv) {
       }
    end = clock();
    fclose(db);
-
    double insert_time_AVL = (double) (end - start) / CLOCKS_PER_SEC;
    printf("[AVL] Insert %d integers: %lf\n", size_of_tree, insert_time_AVL);
    fprintf(out, "%.10f,", insert_time_AVL);
 
-   printf("Query extremities...\n");
 
+   printf("Query extremities...\n");
    // Query First, Middle, Last
    // ABP
    int first = 1;
    int middle = size_of_tree/2;
    start = clock();
-   tmp = consultaABP(ABP, first)->info;
+      consultaABP(ABP, first);
    end = clock();
    double search_time = (double) (end - start) / CLOCKS_PER_SEC;
    printf("[ABP] Query First: %lf\n", search_time);
    fprintf(out, "%.10f,", search_time);
    start = clock();
-   tmp = consultaABP(ABP, middle)->info;
+      consultaABP(ABP, middle);
    end = clock();
    search_time = (double) (end - start) / CLOCKS_PER_SEC;
    printf("[ABP] Query Middle: %lf\n", search_time);
    fprintf(out, "%.10f,", search_time);
    start = clock();
-   tmp = consultaABP(ABP, size_of_tree)->info;
+      consultaABP(ABP, size_of_tree);
    end = clock();
    search_time = (double) (end - start) / CLOCKS_PER_SEC;
    printf("[ABP] Query Last: %lf\n", search_time);
    fprintf(out, "%.10f,", search_time);
+
    // AVL
    start = clock();
-   tmp = consultaAVL(AVL, first)->info;
+      consultaAVL(AVL, first);
    end = clock();
    search_time = (double) (end - start) / CLOCKS_PER_SEC;
    printf("[AVL] Query First: %lf\n", search_time);
    fprintf(out, "%.10f,", search_time);
    start = clock();
-   tmp = consultaAVL(AVL, middle)->info;
+      consultaAVL(AVL, middle);
    end = clock();
    search_time = (double) (end - start) / CLOCKS_PER_SEC;
    printf("[AVL] Query Middle: %lf\n", search_time);
    fprintf(out, "%.10f,", search_time);
    start = clock();
-   tmp = consultaAVL(AVL, size_of_tree)->info;
+      consultaAVL(AVL, size_of_tree);
    end = clock();
    search_time = (double) (end - start) / CLOCKS_PER_SEC;
    printf("[AVL] Query Last: %lf\n", search_time);
    fprintf(out, "%.10f,", search_time);
+
 
    printf("Querying random...\n");
    // Query Random
@@ -137,7 +139,7 @@ int main(int argc, char **argv) {
    for (int i = 0; i < AVL_PRECISION; i++) {
       tmp = (rand() % size_of_tree) + 1;
       start = clock();
-      consultaABP(ABP, tmp);
+         consultaABP(ABP, tmp);
       end = clock();
       search_time = (double) (end - start) / CLOCKS_PER_SEC;
       sum += search_time;
@@ -150,7 +152,7 @@ int main(int argc, char **argv) {
    for (int i = 0; i < AVL_PRECISION; i++) {
       tmp = (rand() % size_of_tree) + 1;
       start = clock();
-      consultaAVL(AVL, tmp);
+         consultaAVL(AVL, tmp);
       end = clock();
       search_time = (double) (end - start) / CLOCKS_PER_SEC;
       sum += search_time;
@@ -159,6 +161,8 @@ int main(int argc, char **argv) {
    printf("[AVL] %d Mean %.10lf\n", AVL_PRECISION, (sum / AVL_PRECISION));
    fprintf(out, "%.10f", (sum / AVL_PRECISION));
 
+
+   // Close output file
    fclose(out);
 
    return 0;
