@@ -5,10 +5,10 @@
 #include "abp.h"
 #include "avl.h"
 
-#define AVL_PRECISION 10
+#define AVL_PRECISION 50
 
 void progressBar(int progress, int total) {
-    int barWidth = 50; // Largura da barra de progresso
+    int barWidth = 69; // Largura da barra de progresso
     float percent = (float)progress / (float)total;
     int progressWidth = (int)(percent * barWidth);
 
@@ -119,9 +119,9 @@ int main(int argc, char **argv) {
       end = clock();
       search_time = (double) (end - start) / CLOCKS_PER_SEC;
       sum += search_time;
-      printf("[ABP] Query %d: %lf\n", tmp, search_time);
+      // printf("[ABP] Query %d: %lf\n", tmp, search_time);
    }
-   printf("[ABP] Mean %lf\n", (sum / AVL_PRECISION));
+   printf("[ABP] %d Mean %.10lf\n", AVL_PRECISION, (sum / AVL_PRECISION));
    // AVL
    sum = 0;
    for (int i = 0; i < AVL_PRECISION; i++) {
@@ -131,9 +131,9 @@ int main(int argc, char **argv) {
       end = clock();
       search_time = (double) (end - start) / CLOCKS_PER_SEC;
       sum += search_time;
-      printf("[AVL] Query %d: %lf\n", tmp, search_time);
+      // printf("[AVL] Query %d: %lf\n", tmp, search_time);
    }
-   printf("[AVL] Mean %lf\n", (sum / AVL_PRECISION));
+   printf("[AVL] %d Mean %.10lf\n", AVL_PRECISION, (sum / AVL_PRECISION));
 
    return 0;
 }
